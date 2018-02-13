@@ -19,8 +19,9 @@ namespace Mravenec
 
         static void Main(string[] args)
         {
-            const int maxX = 512;
+            const int maxX = 128;
             int x = maxX / 2, y = maxX / 2;
+            int fiboA = 1; int fiboB = 1;
             var image = new Bitmap(maxX, maxX);
             using (Graphics graph = Graphics.FromImage(image))
             {
@@ -30,14 +31,19 @@ namespace Mravenec
             var white = Color.White;
             var black = Color.Black;
 
-
             Direction direction = Direction.North;
 
-            for (ulong i = 0; i < 10000000; i++)
+            var dirName = $"{maxX}x{maxX}";
+            System.IO.Directory.CreateDirectory(dirName);
+            for (int i = 0; i < 1000000000; i++)
             {
-                if (i % 256 == 0)
+                if (i == fiboB)
                 {
-                    image.Save("Step_" + i + ".gif", System.Drawing.Imaging.ImageFormat.Gif);
+                    var p = fiboA + fiboB;
+                    fiboA = fiboB;
+                    fiboB = p;
+
+                    image.Save(dirName + "/Step_" + i + ".gif", System.Drawing.Imaging.ImageFormat.Gif);
                     Console.WriteLine(i);
                 }
 
@@ -93,7 +99,7 @@ namespace Mravenec
                             direction = Direction.North;
                         }
                         break;
-                }                
+                }
 
                 if (x >= maxX)
                     x = 0;
@@ -104,13 +110,8 @@ namespace Mravenec
                     y = 0;
                 else if (y < 0)
                     y = maxX - 1;
-
             }
-
-            image.Save("Step_finish.gif", System.Drawing.Imaging.ImageFormat.Gif);
-
-            Console.WriteLine("Finish");
-            Console.ReadKey();
+            image.Save(dirName + "/Step_finish.gif", System.Drawing.Imaging.ImageFormat.Gif);
         }
     }
 }
